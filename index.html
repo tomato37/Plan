@@ -5,62 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>심플 메모 웹앱</title>
     <style>
-        /*
-         * 5) 디자인: 부드럽고 트렌디한 현대적 디자인
-         * 부드러운 크림색 배경과 포인트 컬러를 사용합니다.
-         */
         :root {
-            --color-primary: #8a7c93; /* 부드러운 보라 계열 */
-            --color-secondary: #c9c5d7; /* 연한 라벤더 */
-            --color-background: #f7f7f7; /* 크리미 화이트 */
+            --color-primary: #8a7c93;
+            --color-secondary: #c9c5d7;
+            --color-background: #f7f7f7;
             --color-text: #333333;
             --color-note-bg: #ffffff;
             --color-border: #e0e0e0;
         }
 
-        /* 3) 화면을 꽉 채우는 홈페이지 섹션 & 2) 스크롤하면 자연스럽게 읽히는 구성 */
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
             color: var(--color-text);
             background-color: var(--color-background);
-            scroll-behavior: smooth; /* 부드러운 스크롤 */
+            scroll-behavior: smooth;
             overflow-x: hidden;
+        }
+
+        /* 상단 고정 내비게이션 */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 15px 0;
+            font-weight: bold;
+        }
+
+        header a {
+            text-decoration: none;
+            color: var(--color-primary);
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        header a:hover {
+            color: #6f6575;
         }
 
         .container {
             height: 100vh;
             overflow-y: scroll;
-            scroll-snap-type: y mandatory; /* 섹션 스냅 설정 */
+            scroll-snap-type: y mandatory;
         }
 
         .section {
-            height: 100vh; /* 화면을 꽉 채움 */
+            height: 100vh;
             width: 100vw;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
+            padding: 100px 40px 40px; /* 헤더 높이 고려 */
             box-sizing: border-box;
-            scroll-snap-align: start; /* 섹션 시작점에 스냅 */
+            scroll-snap-align: start;
             transition: background-color 0.5s ease;
         }
 
-        /* 1) 웹앱페이지는 메모 스타일: 섹션별 스타일 */
-        #section1 {
-            background-color: var(--color-note-bg);
-        }
+        #section1 { background-color: var(--color-note-bg); }
+        #section2 { background-color: var(--color-secondary); }
+        #section3 { background-color: var(--color-background); }
 
-        #section2 {
-            background-color: var(--color-secondary);
-        }
-
-        #section3 {
-            background-color: var(--color-background);
-        }
-
-        /* 5) 디자인: 폰트 및 요소 스타일 */
         .section h2 {
             font-size: 3em;
             margin-bottom: 20px;
@@ -68,7 +80,6 @@
             font-weight: 700;
         }
 
-        /* 1번째 섹션: 오늘의 할일 */
         #plan-input {
             width: 80%;
             max-width: 600px;
@@ -89,7 +100,7 @@
             box-shadow: 0 0 0 4px rgba(138, 124, 147, 0.2);
         }
 
-        /* 2번째 섹션: 캘린더 (CSS Grid로 간단 구현) */
+        /* 캘린더 */
         .calendar-container {
             width: 90%;
             max-width: 800px;
@@ -107,6 +118,14 @@
             color: var(--color-primary);
             font-size: 1.5em;
             font-weight: bold;
+        }
+
+        .calendar-header button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: var(--color-primary);
+            cursor: pointer;
         }
 
         .calendar-grid {
@@ -131,22 +150,26 @@
             min-height: 40px;
         }
 
-        .day-cell:hover {
-            background-color: var(--color-secondary);
-        }
+        .day-cell:hover { background-color: var(--color-secondary); }
+        .day-cell.today { background-color: var(--color-primary); color: white; font-weight: bold; }
 
-        .day-cell.today {
+        .day-cell .dot {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
             background-color: var(--color-primary);
-            color: white;
-            font-weight: bold;
+            border-radius: 50%;
         }
 
-        /* 3번째 섹션: 자유 메모지 */
+        /* 자유 메모 */
         #memo-textarea {
             width: 80%;
             max-width: 600px;
             padding: 20px;
-            border: none; /* 메모지 느낌을 위해 테두리 제거 */
+            border: none;
             border-radius: 12px;
             font-size: 1.2em;
             resize: none;
@@ -161,16 +184,20 @@
             outline: none;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 0 0 2px var(--color-primary) inset;
         }
-
     </style>
 </head>
 <body>
 
+    <header>
+        <a href="#section1">오늘의 할일</a>
+        <a href="#section2">한 달 계획</a>
+        <a href="#section3">자유 메모</a>
+    </header>
+
     <div class="container">
-        
         <section id="section1" class="section">
             <h2>✨ 오늘의 할일</h2>
-            <textarea id="plan-input" placeholder="오늘의 Plan을 자유롭게 적어보세요. (예: 10시 보고서 작성, 점심 약속 확인 등)"></textarea>
+            <textarea id="plan-input" placeholder="오늘의 Plan을 자유롭게 적어보세요."></textarea>
         </section>
 
         <section id="section2" class="section">
@@ -181,35 +208,26 @@
                     <span id="current-month-year">2025년 11월</span>
                     <button onclick="changeMonth(1)">&#9654;</button>
                 </div>
-                <div id="calendar-grid" class="calendar-grid">
-                    <div class="day-name">일</div>
-                    <div class="day-name">월</div>
-                    <div class="day-name">화</div>
-                    <div class="day-name">수</div>
-                    <div class="day-name">목</div>
-                    <div class="day-name">금</div>
-                    <div class="day-name">토</div>
-                    </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
             </div>
         </section>
 
         <section id="section3" class="section">
             <h2>📝 자유 메모</h2>
-            <textarea id="memo-textarea" placeholder="여기에 자유롭게 아무 글씨나 적어보세요. 이 메모는 브라우저에 임시 저장됩니다."></textarea>
+            <textarea id="memo-textarea" placeholder="여기에 자유롭게 아무 글씨나 적어보세요."></textarea>
         </section>
     </div>
 
     <script>
-        // JavaScript for Calendar and Local Storage
-
-        // 캘린더 기능
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         const monthYearDisplay = document.getElementById('current-month-year');
         const calendarGrid = document.getElementById('calendar-grid');
+        const planInput = document.getElementById('plan-input');
+        const memoTextarea = document.getElementById('memo-textarea');
 
         function renderCalendar(month, year) {
-            const firstDay = new Date(year, month, 1).getDay(); // 0(일) ~ 6(토)
+            const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
 
@@ -224,48 +242,52 @@
                 <div class="day-name">토</div>
             `;
 
-            // 첫째 주 공백 채우기
             for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.classList.add('day-cell', 'empty');
-                calendarGrid.appendChild(emptyCell);
+                calendarGrid.appendChild(document.createElement('div'));
             }
 
-            // 날짜 채우기
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.classList.add('day-cell');
                 dayCell.textContent = day;
 
-                // 오늘 날짜 표시
+                const dateKey = `${year}-${month + 1}-${day}`;
+                const savedPlan = localStorage.getItem(`plan-${dateKey}`);
+
+                if (savedPlan) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dayCell.appendChild(dot);
+                }
+
                 if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
                     dayCell.classList.add('today');
                 }
 
-                // 날짜 클릭 시 이벤트 (계획 메모 기능 추가 가능)
-                dayCell.addEventListener('click', () => {
-                    alert(`${year}년 ${month + 1}월 ${day}일 계획을 세울 수 있습니다! (추가 기능 구현 필요)`);
-                });
-
+                dayCell.addEventListener('click', () => handleDayClick(dateKey));
                 calendarGrid.appendChild(dayCell);
             }
         }
 
-        function changeMonth(delta) {
-            currentMonth += delta;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            } else if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
+        function handleDayClick(dateKey) {
+            const existing = localStorage.getItem(`plan-${dateKey}`) || "";
+            const newPlan = prompt(`${dateKey} 일정 입력 (빈칸 저장 시 삭제됨):`, existing);
+
+            if (newPlan === null) return;
+            if (newPlan.trim() === "") {
+                localStorage.removeItem(`plan-${dateKey}`);
+            } else {
+                localStorage.setItem(`plan-${dateKey}`, newPlan);
             }
             renderCalendar(currentMonth, currentYear);
         }
 
-        // 로컬 스토리지에 메모 내용 저장 및 불러오기 (사용자 데이터 유지)
-        const planInput = document.getElementById('plan-input');
-        const memoTextarea = document.getElementById('memo-textarea');
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentMonth, currentYear);
+        }
 
         function loadNotes() {
             planInput.value = localStorage.getItem('todayPlan') || '';
@@ -277,11 +299,9 @@
             localStorage.setItem('freeMemo', memoTextarea.value);
         }
 
-        // 입력 시마다 저장
         planInput.addEventListener('input', saveNotes);
         memoTextarea.addEventListener('input', saveNotes);
 
-        // 초기 실행
         document.addEventListener('DOMContentLoaded', () => {
             renderCalendar(currentMonth, currentYear);
             loadNotes();
